@@ -1,0 +1,15 @@
+node_modules/
+dist/
+coverage/
+.env
+.env.*
+!.env.example
+# Firmware: nunca subir credenciales WiFi ni API keys
+firmware/src/config.h
+firmware/.pio/
+firmware/.vscode/
+*.log
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db

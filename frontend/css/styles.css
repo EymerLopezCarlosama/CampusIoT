@@ -1,0 +1,6 @@
+/* PROMPT — css/styles.css
+ *
+ * Estilos de todas las páginas. Variables CSS para los colores de estado: libre (verde), parcial (ámbar), con_personas (ámbar), lleno (rojo), sin_conexion (gris). El estado debe verse también por texto/icono, no solo por color (accesibilidad).
+ * Enfoque móvil primero (se abre desde un QR): tarjetas apiladas en pantallas angostas y en dos columnas en pantallas grandes. Tipografía legible, contraste suficiente.
+ * Hecho cuando: las 4 páginas comparten encabezado, tarjetas y botones, y se leen bien a 360 px de ancho.
+ */

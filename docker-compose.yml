@@ -1,0 +1,43 @@
+# Solo para desarrollo local. El firmware (ESP32) NO usa Docker.
+# Uso:  docker compose up -d db        -> solo la base de datos (backend con npm run dev)
+#       docker compose up --build      -> base de datos + backend + página en http://localhost:3000
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: campusiot
+      POSTGRES_PASSWORD: campusiot
+      POSTGRES_DB: campusiot
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      # Se ejecutan solo la primera vez que se crea el volumen
+      - ./database/schema.sql:/docker-entrypoint-initdb.d/01-schema.sql:ro
+      - ./database/seeds/seed.sql:/docker-entrypoint-initdb.d/02-seed.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U campusiot -d campusiot"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  backend:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    environment:
+      PORT: 3000
+      DATABASE_URL: postgresql://campusiot:campusiot@db:5432/campusiot
+      DATABASE_SSL: "false"
+      CORS_ORIGIN: http://localhost:3000
+      ADMIN_KEY: cambiar-esta-clave
+      OFFLINE_AFTER_S: 30
+      EXPECTED_INTERVAL_S: 3
+    ports:
+      - "3000:3000"
+    depends_on:
+      db:
+        condition: service_healthy
+
+volumes:
+  pgdata:
