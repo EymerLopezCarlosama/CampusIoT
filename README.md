@@ -15,7 +15,7 @@ Detalle en [docs/arquitectura.md](docs/arquitectura.md).
 | `database/` | `schema.sql`, `seeds/seed.sql`, migraciones | 3.2 · Yined |
 | `frontend/` | Páginas: estado en vivo, historial, verificación, calibración | 3.3 · María |
 | `tools/` | `simulator.js`: envía lecturas falsas para desarrollar sin hardware | Todas |
-| `docs/` | Arquitectura, contrato de la API, historias de usuario, hardware, calibración, jornada de prueba | 2.1 · 2.3 |
+| `docs/` | Arquitectura, contrato de la API, historias de usuario, hardware, calibración, jornada de prueba y [distribución de trabajo](docs/distribucion-de-trabajo.md) (orden de desarrollo por persona) | 2.1 · 2.3 |
 
 ## Arranque rápido (sin hardware)
 1. `bash scripts/setup.sh` (crea `.env` y `firmware/src/config.h`, instala el backend).
@@ -31,10 +31,18 @@ Sirve para tener la misma base de datos en los tres computadores sin instalar Po
 El firmware **no** usa Docker; se compila y se sube con PlatformIO.
 
 ## Flujo de ramas
-`main` (estable, lo que se usa en la jornada de prueba) ← `develop` ← `feature/hu-XX-descripcion`
+Sin `develop`: `main` es la rama estable (lo que se usa en la jornada de prueba) y cada integrante trabaja en su propia rama:
+| Rama | Quién | Carpeta |
+|---|---|---|
+| `eymer/firmware` | Eymer | `firmware/` |
+| `yined/backend` | Yined | `backend/`, `database/` |
+| `maria/frontend` | María | `frontend/` |
+
+Se trabaja en la rama propia, se abre un Pull Request hacia `main` y otra persona lo revisa antes de unirlo. Antes de empezar cada día: `git pull origin main` y unir `main` a tu rama (`git merge main`).
 Commits: `feat:`, `fix:`, `docs:`, `refactor:`, `test:`, `chore:`
 
 ## Reglas del repo
 - Nunca subir `.env` ni `firmware/src/config.h` (WiFi y API keys). Usar los archivos `*.example`.
-- Los umbrales de estado viven en la BD (`space_config`, `zone_tables`), no en el código: se ajustan en la calibración (tarea 4.3).
+- Los umbrales de estado viven en la BD (`config_espacio`, `banda_mesa`), no en el código: se ajustan en la calibración (tarea 4.3).
 - Si cambia un endpoint o el JSON del nodo, se actualiza primero `docs/api-contract.md`.
+- Nombres: la BD está en español (tablas y columnas); la API (rutas y JSON) conserva los nombres del contrato en inglés. La equivalencia está en `docs/base-de-datos/diccionario-de-datos.md`.

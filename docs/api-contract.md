@@ -25,7 +25,7 @@ Códigos HTTP: 400 datos inválidos · 401 sin/errónea API key · 404 no existe
 ```
 - `device_ts`: milisegundos desde 1970 (hora NTP del nodo). Opcional; sin él no se mide el retardo.
 - `temperature` / `humidity` pueden ser `null` si el DHT22 falló esa vez.
-- `radars[].id` debe existir en `zones.code` del nodo. `target`: `moving` | `static` | `both` | `none`.
+- `radars[].id` debe existir en `zona.codigo` del nodo. `target`: `moving` | `static` | `both` | `none`.
 - `distance_cm` y `energy` son los del objetivo más fuerte (0 si no hay).
 
 → `201`: `{ "id": 1234, "state": "parcial", "tables_occupied": 1 }`
@@ -93,7 +93,7 @@ Errores: `409 FRANJA_DUPLICADA` (mismo espacio + día + franja) · `400 DATOS_IN
                "availability_pct": 97.1, "avg_delay_s": 0.8, "max_delay_s": 2.4 } ],
   "goal": { "availability_pct": 90, "max_delay_s": 10 } }
 ```
-`expected` = duración ÷ `EXPECTED_INTERVAL_S`. Retardo = `received_at − device_ts` (solo lecturas con `device_ts`).
+`expected` = duración ÷ `EXPECTED_INTERVAL_S`. Retardo = `fecha_recepcion − fecha_medicion` (solo lecturas con `device_ts`).
 
 ## Utilidades (HU-12)
 **GET `/salud`** → `{ "backend": "ok", "base_datos": "ok", "nodos": [ { "node": "nodo-sotano", "last_seen": "...", "online": true } ] }`

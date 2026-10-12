@@ -10,7 +10,7 @@
 #define WIFI_SSID      "CAMBIAR"
 #define WIFI_PASSWORD  "CAMBIAR"
 #define SERVER_URL     "http://192.168.1.50:3000/api/readings"   // en línea: https://<tu-servicio>.onrender.com/api/readings
-#define API_KEY        "dev-key-gastronomia"                      // la de la tabla nodes
+#define API_KEY        "dev-key-gastronomia"                      // la de la tabla nodo (columna clave_api)
 
 // --- Tiempos ---
 #define SEND_INTERVAL_MS 3000               // OE2: retardo máximo 10 s (ver docs/arquitectura.md)

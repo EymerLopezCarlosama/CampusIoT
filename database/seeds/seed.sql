@@ -1,51 +1,51 @@
 -- CampusIoT · datos iniciales
--- ATENCIÓN: las API keys de aquí son SOLO para desarrollo. En Supabase/producción cámbialas
--- (UPDATE nodes SET api_key = '<clave larga aleatoria>' WHERE name = '...') y ponlas en firmware/src/config.h.
+-- ATENCIÓN: las claves API de aquí son SOLO para desarrollo. En Supabase/producción cámbialas
+-- (UPDATE nodo SET clave_api = '<clave larga aleatoria>' WHERE nombre = '...') y ponlas en firmware/src/config.h.
 -- Las bandas de distancia y los umbrales son PROVISIONALES hasta la calibración (tarea 4.3).
 
-INSERT INTO spaces (slug, name, mode, total_tables) VALUES
+INSERT INTO espacio (slug, nombre, modo, total_mesas) VALUES
   ('gastronomia', 'Estudio Gastronomía', 'mesas',   4),
   ('sotano',      'Sótano',              'espacio', 7)
 ON CONFLICT (slug) DO NOTHING;
 
-INSERT INTO nodes (space_id, name, api_key)
-SELECT id, 'nodo-gastronomia', 'dev-key-gastronomia' FROM spaces WHERE slug = 'gastronomia'
-ON CONFLICT (api_key) DO NOTHING;
+INSERT INTO nodo (id_espacio, nombre, clave_api)
+SELECT id_espacio, 'nodo-gastronomia', 'dev-key-gastronomia' FROM espacio WHERE slug = 'gastronomia'
+ON CONFLICT (clave_api) DO NOTHING;
 
-INSERT INTO nodes (space_id, name, api_key)
-SELECT id, 'nodo-sotano', 'dev-key-sotano' FROM spaces WHERE slug = 'sotano'
-ON CONFLICT (api_key) DO NOTHING;
+INSERT INTO nodo (id_espacio, nombre, clave_api)
+SELECT id_espacio, 'nodo-sotano', 'dev-key-sotano' FROM espacio WHERE slug = 'sotano'
+ON CONFLICT (clave_api) DO NOTHING;
 
 -- Zonas (un radar cada una)
-INSERT INTO zones (space_id, node_id, code, label, tables)
-SELECT s.id, n.id, 'A', 'Columna de 3 mesas junto a la pared', 3
-FROM spaces s JOIN nodes n ON n.space_id = s.id WHERE s.slug = 'gastronomia'
-ON CONFLICT (node_id, code) DO NOTHING;
+INSERT INTO zona (id_espacio, id_nodo, codigo, etiqueta, mesas)
+SELECT e.id_espacio, n.id_nodo, 'A', 'Columna de 3 mesas junto a la pared', 3
+FROM espacio e JOIN nodo n ON n.id_espacio = e.id_espacio WHERE e.slug = 'gastronomia'
+ON CONFLICT (id_nodo, codigo) DO NOTHING;
 
-INSERT INTO zones (space_id, node_id, code, label, tables)
-SELECT s.id, n.id, 'B', 'Mesa aislada al otro lado', 1
-FROM spaces s JOIN nodes n ON n.space_id = s.id WHERE s.slug = 'gastronomia'
-ON CONFLICT (node_id, code) DO NOTHING;
+INSERT INTO zona (id_espacio, id_nodo, codigo, etiqueta, mesas)
+SELECT e.id_espacio, n.id_nodo, 'B', 'Mesa aislada al otro lado', 1
+FROM espacio e JOIN nodo n ON n.id_espacio = e.id_espacio WHERE e.slug = 'gastronomia'
+ON CONFLICT (id_nodo, codigo) DO NOTHING;
 
-INSERT INTO zones (space_id, node_id, code, label, tables)
-SELECT s.id, n.id, 'S', 'Sótano completo (7 mesas juntas)', 7
-FROM spaces s JOIN nodes n ON n.space_id = s.id WHERE s.slug = 'sotano'
-ON CONFLICT (node_id, code) DO NOTHING;
+INSERT INTO zona (id_espacio, id_nodo, codigo, etiqueta, mesas)
+SELECT e.id_espacio, n.id_nodo, 'S', 'Sótano completo (7 mesas juntas)', 7
+FROM espacio e JOIN nodo n ON n.id_espacio = e.id_espacio WHERE e.slug = 'sotano'
+ON CONFLICT (id_nodo, codigo) DO NOTHING;
 
 -- Bandas provisionales por mesa (cm desde el radar) SOLO en Gastronomía
-INSERT INTO zone_tables (zone_id, table_no, min_cm, max_cm)
-SELECT z.id, t.table_no, t.min_cm, t.max_cm
-FROM zones z
-JOIN spaces s ON s.id = z.space_id AND s.slug = 'gastronomia'
+INSERT INTO banda_mesa (id_zona, num_mesa, min_cm, max_cm)
+SELECT z.id_zona, t.num_mesa, t.min_cm, t.max_cm
+FROM zona z
+JOIN espacio e ON e.id_espacio = z.id_espacio AND e.slug = 'gastronomia'
 JOIN (VALUES ('A', 1,   0, 150), ('A', 2, 150, 300), ('A', 3, 300, 450), ('B', 1, 0, 400))
-  AS t(code, table_no, min_cm, max_cm) ON t.code = z.code
-ON CONFLICT (zone_id, table_no) DO NOTHING;
+  AS t(codigo, num_mesa, min_cm, max_cm) ON t.codigo = z.codigo
+ON CONFLICT (id_zona, num_mesa) DO NOTHING;
 
 -- Umbrales provisionales del Sótano (índice de ocupación = energía promedio de la ventana)
-INSERT INTO space_config (space_id, key, value)
-SELECT s.id, c.key, c.value
-FROM spaces s
+INSERT INTO config_espacio (id_espacio, clave, valor)
+SELECT e.id_espacio, c.clave, c.valor
+FROM espacio e
 JOIN (VALUES ('umbral_personas', 15), ('umbral_lleno', 60), ('ventana_s', 60))
-  AS c(key, value) ON TRUE
-WHERE s.slug = 'sotano'
-ON CONFLICT (space_id, key) DO NOTHING;
+  AS c(clave, valor) ON TRUE
+WHERE e.slug = 'sotano'
+ON CONFLICT (id_espacio, clave) DO NOTHING;
