@@ -7,4 +7,4 @@
 //
 // Depende de: config.h, sensors.h, net.h
 // Referencia: docs/api-contract.md (POST /readings) · docs/hardware/pines-y-cableado.md
-// Hecho cuando: el monitor serial muestra "OK 201" cada 3 s y la lectura aparece en la tabla readings.
+// Hecho cuando: el monitor serial muestra "OK 201" cada 3 s y la lectura aparece en la tabla lectura.
