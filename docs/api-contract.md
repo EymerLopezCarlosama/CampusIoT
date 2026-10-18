@@ -66,7 +66,7 @@ Devuelve el promedio por minuto para no enviar miles de puntos.
 **PUT `/spaces/:slug/config`** body: `{ "config"?: { "umbral_personas": 20 }, "zone_tables"?: [ { "zone": "A", "table_no": 1, "min_cm": 0, "max_cm": 160 } ] }` → `200` + config actualizada.
 Protegido con `x-admin-key` (variable `ADMIN_KEY` del `.env`).
 
-**GET `/spaces/:slug/raw?limit=60`** → últimas lecturas crudas (con `radars`) para la pantalla de calibración.
+**GET `/spaces/:slug/raw?limit=60`** → últimas lecturas crudas (con `radars`) para la pantalla de calibración. Protegido con `x-admin-key`.
 
 ## Verificación manual (HU-07, HU-08) — tarea 5.1
 **POST `/manual-checks`** body:

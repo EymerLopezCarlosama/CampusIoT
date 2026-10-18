@@ -8,4 +8,4 @@
 //
 // Depende de: net.h, config.h
 // Referencia: docs/api-contract.md (POST /readings)
-// Hecho cuando: con el backend local encendido, el POST devuelve 201 y la fila aparece en readings.
+// Hecho cuando: con el backend local encendido, el POST devuelve 201 y la fila aparece en la tabla lectura.
