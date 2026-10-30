@@ -1,6 +1,6 @@
 // PROMPT — tools/simulator.js (HU-11)
 //
-// Script de Node 20 (sin dependencias, usa fetch) que simula los 2 nodos para desarrollar backend y página sin hardware.
+// Script de Node 20 (sin dependencias, usa fetch; tools/package.json declara type: module, así que se usa import) que simula los 2 nodos para desarrollar backend y página sin hardware.
 // Uso: node tools/simulator.js [--url http://localhost:3000/api/readings] [--interval 3] [--escenario vacio|parcial|lleno|ciclo] [--caida sotano]
 // Cada intervalo envía por nodo un POST con la clave del seed (dev-key-gastronomia, dev-key-sotano) y el JSON del contrato:
 //   - Gastronomía: radares A y B; en "ciclo" cambia cada ~30 s entre libre → parcial → lleno; la distancia de A cae dentro de las bandas del seed (0-150, 150-300, 300-450 cm).

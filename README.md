@@ -38,6 +38,8 @@ Sin `develop`: `main` es la rama estable (lo que se usa en la jornada de prueba)
 | `yined/backend` | Yined | `backend/`, `database/` |
 | `maria/frontend` | María | `frontend/` |
 
+Dos excepciones: `status.service` (B5) lo hace Eymer en la rama `eymer/status` y `tools/simulator.js` (B7) lo hace María en `maria/simulador`; ambos PR los revisa Yined.
+
 Se trabaja en la rama propia, se abre un Pull Request hacia `main` y otra persona lo revisa antes de unirlo. Antes de empezar cada día: `git pull origin main` y unir `main` a tu rama (`git merge main`).
 Commits: `feat:`, `fix:`, `docs:`, `refactor:`, `test:`, `chore:`
 

@@ -20,8 +20,8 @@ Esquema en `database/schema.sql` (tablas y columnas en español). El JSON de la 
 | zona | etiqueta | TEXT | Descripción de lo que cubre | | `label` |
 | zona | mesas | SMALLINT | Mesas que cubre el radar | > 0 | `tables` |
 | banda_mesa | id_zona, num_mesa | INT, SMALLINT | Mesa dentro de la zona | PK compuesta | `table_no` |
-| banda_mesa | min_cm, max_cm | INT | Banda de distancia desde el radar que corresponde a la mesa | max > min | `min_cm`, `max_cm` |
-| config_espacio | id_espacio, clave | INT, TEXT | Parámetro por espacio (`umbral_personas`, `umbral_lleno`, `ventana_s`) | PK compuesta | clave en `config` |
+| banda_mesa | min_cm, max_cm | INT | Banda de distancia `[min_cm, max_cm)` desde el radar que corresponde a la mesa | max > min | `min_cm`, `max_cm` |
+| config_espacio | id_espacio, clave | INT, TEXT | Parámetro por espacio (`ventana_s` en ambos; `umbral_personas` y `umbral_lleno` solo en Sótano) | PK compuesta | clave en `config` |
 | config_espacio | valor | REAL | Valor del parámetro | | valor en `config` |
 | lectura | id_lectura | BIGSERIAL | Identificador | PK | `id` |
 | lectura | id_nodo | INT | Nodo que envió la lectura | FK nodo | — |

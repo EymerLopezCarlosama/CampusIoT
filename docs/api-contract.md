@@ -61,7 +61,7 @@ Devuelve el promedio por minuto para no enviar miles de puntos.
   "zones": [ { "code": "A", "tables": [ { "table_no": 1, "min_cm": 0, "max_cm": 150 } ] } ],
   "config": { } }
 ```
-(En el Sótano, `config` trae `umbral_personas`, `umbral_lleno`, `ventana_s`.)
+(En Gastronomía, `config` trae `ventana_s`; en el Sótano, `umbral_personas`, `umbral_lleno` y `ventana_s`. Las bandas son `[min_cm, max_cm)`.)
 
 **PUT `/spaces/:slug/config`** body: `{ "config"?: { "umbral_personas": 20 }, "zone_tables"?: [ { "zone": "A", "table_no": 1, "min_cm": 0, "max_cm": 160 } ] }` → `200` + config actualizada.
 Protegido con `x-admin-key` (variable `ADMIN_KEY` del `.env`).
