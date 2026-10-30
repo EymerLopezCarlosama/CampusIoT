@@ -8,7 +8,8 @@ Herramienta: `frontend/calibracion.html` (distancia y energía de cada radar en 
 2. **Con el espacio vacío** 60 s: anotar la energía de fondo. Si hay lecturas fantasma, mover o reorientar el radar.
 3. Una persona se sienta en la **mesa 1 de la zona A** y se queda quieta 30 s. Anotar `distance_cm` y `energy`. Repetir en las mesas 2 y 3, y en la mesa de la zona B.
 4. Definir para cada mesa una banda `min_cm`–`max_cm` que contenga la distancia medida con ±20 cm de margen y que no se solape con la mesa vecina.
-5. Guardar las bandas con `PUT /api/spaces/gastronomia/config` y repetir el paso 3 para confirmar que la mesa correcta se marca como ocupada.
+5. Guardar las bandas (intervalo `[min_cm, max_cm)`) con `PUT /api/spaces/gastronomia/config` y repetir el paso 3 para confirmar que la mesa correcta se marca como ocupada.
+   Como el radar ve un solo objetivo por lectura, el estado usa la ventana `ventana_s` (45 s por defecto): para ver 2-3 mesas ocupadas hay que esperar esa ventana. Ajustar `ventana_s` (30-60 s) si el estado tarda demasiado o parpadea.
 6. Probar con 2 personas en mesas distintas y con una persona caminando por el pasillo (no debe contar).
 
 ## Sótano (modo espacio)

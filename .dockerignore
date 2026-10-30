@@ -1,0 +1,12 @@
+# Contexto de build = raíz del repo (ver docker-compose.yml). Solo se necesitan backend/ y frontend/.
+**/node_modules
+.git
+.github
+.env
+.env.*
+firmware
+docs
+database
+tools
+scripts
+*.md

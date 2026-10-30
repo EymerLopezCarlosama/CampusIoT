@@ -38,7 +38,7 @@ CREATE TABLE IF NOT EXISTS banda_mesa (
   PRIMARY KEY (id_zona, num_mesa)
 );
 
--- Umbrales ajustables sin tocar código (sótano: umbral_personas, umbral_lleno, ventana_s)
+-- Parámetros ajustables sin tocar código (ventana_s en ambos espacios; sótano además umbral_personas y umbral_lleno)
 CREATE TABLE IF NOT EXISTS config_espacio (
   id_espacio INT NOT NULL REFERENCES espacio(id_espacio) ON DELETE CASCADE,
   clave      TEXT NOT NULL,

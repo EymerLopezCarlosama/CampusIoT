@@ -41,6 +41,12 @@ JOIN (VALUES ('A', 1,   0, 150), ('A', 2, 150, 300), ('A', 3, 300, 450), ('B', 1
   AS t(codigo, num_mesa, min_cm, max_cm) ON t.codigo = z.codigo
 ON CONFLICT (id_zona, num_mesa) DO NOTHING;
 
+-- Ventana de Gastronomía (s): una mesa cuenta como ocupada si en esta ventana hubo un objetivo en su banda.
+-- Necesaria porque el LD2410C entrega UN solo objetivo por lectura: sin ventana, la zona A nunca marcaría 2-3 mesas a la vez.
+INSERT INTO config_espacio (id_espacio, clave, valor)
+SELECT id_espacio, 'ventana_s', 45 FROM espacio WHERE slug = 'gastronomia'
+ON CONFLICT (id_espacio, clave) DO NOTHING;
+
 -- Umbrales provisionales del Sótano (índice de ocupación = energía promedio de la ventana)
 INSERT INTO config_espacio (id_espacio, clave, valor)
 SELECT e.id_espacio, c.clave, c.valor

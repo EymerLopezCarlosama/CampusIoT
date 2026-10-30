@@ -26,7 +26,7 @@ Peor caso = intervalo de envío (3 s) + red y servidor (≤ 1 s) + intervalo de 
 Con 5 s en ambos lados el peor caso sería 11 s, por eso se usa 3 s.
 
 ## Cálculo del estado (`backend/src/services/status.service.js`)
-- **Gastronomía (modo `mesas`)**: una mesa está ocupada si el radar de su zona detecta un objetivo cuya distancia cae dentro de la banda de esa mesa (`banda_mesa`). `mesas_ocupadas` = suma de mesas ocupadas. Estado: 0 = **libre**, 1 a 3 = **parcial**, 4 = **lleno**.
+- **Gastronomía (modo `mesas`)**: el LD2410C entrega **un solo objetivo** por lectura, así que una mesa está ocupada si, en la ventana de los últimos `ventana_s` segundos (45 s por defecto), el radar de su zona detectó un objetivo cuya distancia cae dentro de la banda de esa mesa (`banda_mesa`, intervalo `[min_cm, max_cm)`). `mesas_ocupadas` = suma de mesas ocupadas. Estado: 0 = **libre**, 1 a 3 = **parcial**, 4 = **lleno**.
 - **Sótano (modo `espacio`)**: un solo radar y mesas juntas. Índice de ocupación = energía promedio de la ventana (`ventana_s`, 60 s por defecto). Menor que `umbral_personas` = **libre**; entre ambos = **con_personas**; mayor o igual que `umbral_lleno` = **lleno**.
 - **sin_conexion**: la última lectura del nodo tiene más de `OFFLINE_AFTER_S` (30 s). No se guarda en `lectura`; se calcula al consultar.
 
