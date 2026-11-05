@@ -153,6 +153,10 @@ main.page-shell {
   gap: 1rem;
 }
 
+.chart-grid[hidden] {
+  display: none;
+}
+
 .card,
 .space-card,
 .panel {
