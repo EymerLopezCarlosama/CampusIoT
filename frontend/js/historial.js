@@ -159,7 +159,12 @@ function dibujarHistorial(filas) {
       filas,
       filas.map((fila) => numeroOVacio(fila.tables_occupied)),
       "#167447",
-      { y: { suggestedMax: numeroOVacio(activeSpace.total_tables) ?? undefined } },
+     {
+  y: {
+    suggestedMax: numeroOVacio(activeSpace.total_tables) ?? undefined,
+    ticks: { stepSize: 1, precision: 0 },
+  },
+},
     );
     document.querySelector("#occupancy-title").textContent = "Mesas ocupadas";
   } else {
