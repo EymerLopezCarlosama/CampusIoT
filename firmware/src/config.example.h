@@ -21,5 +21,5 @@
 #define PIN_RADAR2_RX  26                   // TX del radar #2
 #define PIN_RADAR2_TX  27
 #define PIN_DHT        4
-#define PIN_MIC        34                   // ADC1
+#define PIN_MIC        32                   // ADC1
 #define PIN_LED        2
