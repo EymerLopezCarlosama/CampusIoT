@@ -37,6 +37,7 @@ void loop() {
         Serial.printf("latido #%lu  ", contador);
         imprimirValor("temp", s.temperature, " C");
         imprimirValor("hum", s.humidity, " %");
+        Serial.printf("ruido=%d", s.noise_level);
         Serial.println();
     }
 
