@@ -3,11 +3,43 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Consulta en tiempo real la ocupación y las condiciones de los espacios del campus."
+    />
     <title>CampusIoT · Estado de los espacios</title>
     <link rel="stylesheet" href="css/styles.css" />
+    <script type="module" src="js/estado.js"></script>
   </head>
   <body>
-    <!-- PROMPT: página principal (HU-02, HU-03, HU-04, HU-10). Encabezado con el nombre y la hora de la última actualización; una tarjeta por espacio (Estudio Gastronomía y Sótano) con el estado en color Y en texto, "N de M mesas ocupadas" en Gastronomía, temperatura, humedad, ruido y "actualizado hace X s". Estado sin_conexion en gris. Pie con el aviso de privacidad (sin cámaras ni audio) y el enlace a la encuesta. Enlaces a historial.html. Debe verse bien en el celular (se abrirá desde un QR). Toda la lógica va en js/estado.js. -->
-    <script type="module" src="js/estado.js"></script>
+    <header class="site-header">
+      <div class="site-header__inner">
+        <a class="site-brand" href="index.html">CampusIoT</a>
+        <nav class="site-nav" aria-label="Navegación principal">
+          <a href="index.html" aria-current="page">Estado actual</a>
+          <a href="historial.html">Historial</a>
+        </nav>
+      </div>
+    </header>
+
+    <main class="page-shell">
+      <section class="page-heading" aria-labelledby="page-title">
+        <h1 id="page-title">Estado de los espacios</h1>
+        <p>Consulta la ocupación y las condiciones actuales del campus.</p>
+        <p class="muted">
+          Datos actualizados a las <time id="last-updated">—</time>
+        </p>
+      </section>
+
+      <p id="page-message" class="alert alert--info" role="status" aria-live="polite">
+        Cargando espacios…
+      </p>
+      <section id="spaces" class="card-grid" aria-label="Estado por espacio" aria-live="polite"></section>
+    </main>
+
+    <footer class="site-footer page-shell">
+      <p>Privacidad: no se usan cámaras ni se graba audio.</p>
+      <p id="survey-message">La encuesta QR estará disponible próximamente.</p>
+    </footer>
   </body>
 </html>
