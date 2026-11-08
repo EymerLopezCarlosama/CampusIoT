@@ -1,4 +1,4 @@
-// Programa del nodo (F2): latido cada SEND_INTERVAL_MS e impresión de temperatura y humedad.
+// Programa del nodo (F4): latido cada SEND_INTERVAL_MS con temperatura, humedad, ruido y radares.
 #include <Arduino.h>
 #include "config.h"
 #include "sensors.h"
@@ -25,6 +25,7 @@ void setup() {
 }
 
 void loop() {
+    sensorsUpdate();  // Mantiene al día el radar en cada vuelta
     unsigned long ahora = millis();
 
     if (ahora - ultimoLatido >= SEND_INTERVAL_MS) {
@@ -37,8 +38,12 @@ void loop() {
         Serial.printf("latido #%lu  ", contador);
         imprimirValor("temp", s.temperature, " C");
         imprimirValor("hum", s.humidity, " %");
-        Serial.printf("ruido=%d", s.noise_level);
-        Serial.println();
+        Serial.printf("ruido=%d\n", s.noise_level);
+        for (int i = 0; i < RADAR_COUNT; i++) {
+            Serial.printf("   radar %s: present=%d target=%s dist=%d cm energia=%d\n",
+                          s.radars[i].id, s.radars[i].present, s.radars[i].target,
+                          s.radars[i].distance_cm, s.radars[i].energy);
+        }
     }
 
     if (ledEncendido && ahora - ultimoLatido >= LED_ENCENDIDO_MS) {
