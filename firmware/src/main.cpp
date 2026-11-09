@@ -1,7 +1,8 @@
-// Programa del nodo (F4): latido cada SEND_INTERVAL_MS con temperatura, humedad, ruido y radares.
+// Programa del nodo (F6): latido con sensores, estado del WiFi y hora UTC.
 #include <Arduino.h>
 #include "config.h"
 #include "sensors.h"
+#include "net.h"
 
 static const unsigned long LED_ENCENDIDO_MS = 200;
 static unsigned long ultimoLatido = 0;
@@ -22,10 +23,15 @@ void setup() {
     digitalWrite(PIN_LED, LOW);
     sensorsBegin();
     Serial.printf("\n[%s] arranque OK (radares: %d)\n", NODE_NAME, RADAR_COUNT);
+
+    netBegin();
+    if (netConnected()) Serial.printf("WiFi conectado, IP %s\n", netIp().c_str());
+    else Serial.println("WiFi: sin conexion (se sigue reintentando)");
 }
 
 void loop() {
-    sensorsUpdate();  // Mantiene al día el radar en cada vuelta
+    sensorsUpdate();  // mantiene al día los radares en cada vuelta
+    netLoop();        // reintenta el WiFi si se cayó
     unsigned long ahora = millis();
 
     if (ahora - ultimoLatido >= SEND_INTERVAL_MS) {
@@ -44,6 +50,11 @@ void loop() {
                           s.radars[i].id, s.radars[i].present, s.radars[i].target,
                           s.radars[i].distance_cm, s.radars[i].energy);
         }
+
+        if (netConnected()) Serial.printf("   red: WiFi OK  IP=%s", netIp().c_str());
+        else Serial.print("   red: SIN WiFi");
+        if (netSyncTime()) Serial.printf("  hora=%s", netUtc().c_str());
+        Serial.println();
     }
 
     if (ledEncendido && ahora - ultimoLatido >= LED_ENCENDIDO_MS) {
