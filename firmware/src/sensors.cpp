@@ -64,11 +64,11 @@ static int leerRuido() {
     return indice;
 }
 
-// ---------- Radar LD2410C #1 (F4) ----------
+// ---------- Radares LD2410C (F4: radar #1 en Serial2 · F5: radar #2 en Serial1 reasignada) ----------
 static const unsigned long RADAR_BAUDIOS = 256000;
 static const unsigned long RADAR_SIN_TRAMA_MS = 1000;  // sin trama válida durante este tiempo = radar sin comunicación
-static ld2410 radar1;
-static unsigned long radar1UltimaTrama = 0;
+static ld2410 radares[RADAR_COUNT];
+static unsigned long radarUltimaTrama[RADAR_COUNT] = { 0 };
 
 // Convierte la última trama del radar en un RadarReading (objetivo más fuerte).
 static RadarReading leerRadar(ld2410& radar, const char* id, unsigned long ultimaTrama) {
@@ -99,27 +99,33 @@ void sensorsBegin() {
 
     Serial2.setRxBufferSize(2048);
     Serial2.begin(RADAR_BAUDIOS, SERIAL_8N1, PIN_RADAR1_RX, PIN_RADAR1_TX);
-    radar1.begin(Serial2, false);  // false: no bloquea esperando al radar
+    radares[0].begin(Serial2, false);  // false: no bloquea esperando al radar
+#if RADAR_COUNT >= 2
+    Serial1.setRxBufferSize(2048);
+    Serial1.begin(RADAR_BAUDIOS, SERIAL_8N1, PIN_RADAR2_RX, PIN_RADAR2_TX);  // UART1 reasignada: sus pines por defecto son de la flash
+    radares[1].begin(Serial1, false);
+#endif
 }
 
-// Llamar en cada vuelta de loop(): vacía el buffer del radar y anota cuándo llegó la última trama válida.
+// Llamar en cada vuelta de loop(): vacía el buffer de cada radar y anota cuándo llegó su última trama válida.
 void sensorsUpdate() {
-    while (radar1.read());
-    if (radar1.isConnected()) radar1UltimaTrama = millis();
+    for (int i = 0; i < RADAR_COUNT; i++) {
+        while (radares[i].read());
+        if (radares[i].isConnected()) radarUltimaTrama[i] = millis();
+    }
 }
 
 SensorSnapshot sensorsRead() {
     actualizarDht();
-    int ruido = leerRuido();  // bloquea ~100 ms: se hace ANTES de leer el radar
-    sensorsUpdate();          // vacía el buffer justo antes de mirar los radares
+    int ruido = leerRuido();  // bloquea ~100 ms: se hace ANTES de leer los radares
+    sensorsUpdate();          // vacía los buffers justo antes de mirar los radares
 
     SensorSnapshot s;
     s.temperature = dhtTemp;
     s.humidity = dhtHum;
     s.noise_level = ruido;
     for (int i = 0; i < RADAR_COUNT; i++) {
-        if (i == 0) s.radars[i] = leerRadar(radar1, RADAR_IDS_LISTA[i], radar1UltimaTrama);
-        else s.radars[i] = { RADAR_IDS_LISTA[i], false, "none", 0, 0 };  // radar #2: F5
+        s.radars[i] = leerRadar(radares[i], RADAR_IDS_LISTA[i], radarUltimaTrama[i]);
     }
     return s;
 }
