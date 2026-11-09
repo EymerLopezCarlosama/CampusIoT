@@ -3,11 +3,89 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Consulta el historial de ocupación y condiciones ambientales de los espacios del campus."
+    />
     <title>CampusIoT · Historial</title>
     <link rel="stylesheet" href="css/styles.css" />
+    <script
+  defer
+  src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"
+  crossorigin="anonymous"
+></script>
+    <script type="module" src="js/historial.js"></script>
   </head>
   <body>
-    <!-- PROMPT: historial (HU-05). Selector de espacio y de horas (1, 6, 12, 24) y gráficas con Chart.js (cargar desde cdnjs, versión fija) de ocupación, temperatura, humedad y ruido. Lógica en js/historial.js. -->
-    <script type="module" src="js/historial.js"></script>
+    <header class="site-header">
+      <div class="site-header__inner">
+        <a class="site-brand" href="index.html">CampusIoT</a>
+        <nav class="site-nav" aria-label="Navegación principal">
+          <a href="index.html">Estado actual</a>
+          <a href="historial.html" aria-current="page">Historial</a>
+        </nav>
+      </div>
+    </header>
+
+    <main class="page-shell">
+      <section class="page-heading" aria-labelledby="page-title">
+        <h1 id="page-title">Historial de los espacios</h1>
+        <p>Explora cómo han cambiado la ocupación y las condiciones ambientales.</p>
+      </section>
+
+      <section class="panel history-controls" aria-label="Filtros del historial">
+        <div class="form-grid">
+          <div class="form-field">
+            <label for="space-select">Espacio</label>
+            <select id="space-select" name="space" class="form-control" disabled>
+              <option value="">Cargando espacios…</option>
+            </select>
+          </div>
+          <div class="form-field">
+            <label for="hours-select">Periodo</label>
+            <select id="hours-select" name="hours" class="form-control" disabled>
+              <option value="1">Última hora</option>
+              <option value="6" selected>Últimas 6 horas</option>
+              <option value="12">Últimas 12 horas</option>
+              <option value="24">Últimas 24 horas</option>
+            </select>
+          </div>
+        </div>
+      </section>
+
+      <p id="history-message" class="alert alert--info" role="status" aria-live="polite">
+        Cargando historial…
+      </p>
+      <section id="history-charts" class="chart-grid" aria-label="Gráficas del historial" hidden>
+        <article class="card">
+          <h2 id="occupancy-title">Ocupación</h2>
+          <div class="chart-container">
+            <canvas id="occupancy-chart" aria-labelledby="occupancy-title"></canvas>
+          </div>
+        </article>
+        <article class="card">
+          <h2 id="temperature-title">Temperatura</h2>
+          <div class="chart-container">
+            <canvas id="temperature-chart" aria-labelledby="temperature-title"></canvas>
+          </div>
+        </article>
+        <article class="card">
+          <h2 id="humidity-title">Humedad</h2>
+          <div class="chart-container">
+            <canvas id="humidity-chart" aria-labelledby="humidity-title"></canvas>
+          </div>
+        </article>
+        <article class="card">
+          <h2 id="noise-title">Ruido</h2>
+          <div class="chart-container">
+            <canvas id="noise-chart" aria-labelledby="noise-title"></canvas>
+          </div>
+        </article>
+      </section>
+    </main>
+
+    <footer class="site-footer page-shell">
+      <p>Privacidad: no se usan cámaras ni se graba audio.</p>
+    </footer>
   </body>
 </html>
