@@ -5,9 +5,84 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>CampusIoT · Calibración</title>
     <link rel="stylesheet" href="css/styles.css" />
+    <script type="module" src="js/calibracion.js"></script>
   </head>
   <body>
-    <!-- PROMPT: pantalla de calibración (HU-06, tarea 4.3). Pide la x-admin-key (solo en memoria, no guardarla). Muestra EN VIVO, por radar, distancia, energía y tipo de objetivo (últimas lecturas de /spaces/:slug/raw cada 2 s) y la banda de mesa donde cae. Formulario para editar bandas (min_cm/max_cm por mesa) y umbrales del Sótano y guardarlos con PUT /spaces/:slug/config. Lógica en js/calibracion.js. -->
-    <script type="module" src="js/calibracion.js"></script>
+    <header class="site-header">
+      <div class="site-header__inner">
+        <a class="site-brand" href="index.html">CampusIoT</a>
+        <nav class="site-nav" aria-label="Navegación principal">
+          <a href="index.html">Estado actual</a>
+          <a href="historial.html">Historial</a>
+          <a href="verificacion.html">Verificación</a>
+          <a href="calibracion.html" aria-current="page">Calibración</a>
+        </nav>
+      </div>
+    </header>
+
+    <main class="page-shell">
+      <section class="page-heading" aria-labelledby="page-title">
+        <h1 id="page-title">Calibración</h1>
+        <p>Pantalla técnica: mira los radares en vivo y ajusta bandas y umbrales.</p>
+      </section>
+
+      <section class="panel" aria-labelledby="access-title">
+        <h2 id="access-title">Acceso</h2>
+        <form id="access-form" novalidate>
+          <div class="form-grid">
+            <div class="form-field">
+              <label for="space">Espacio</label>
+              <select id="space" name="space" class="form-control">
+                <option value="gastronomia">Estudio Gastronomía</option>
+                <option value="sotano">Sótano</option>
+              </select>
+            </div>
+            <div class="form-field">
+              <label for="admin-key">Clave de administrador</label>
+              <input
+                id="admin-key"
+                name="admin-key"
+                class="form-control"
+                type="password"
+                autocomplete="off"
+              />
+              <p class="form-hint">Solo se guarda en la memoria de esta pestaña.</p>
+            </div>
+          </div>
+          <p id="access-message" class="alert" role="status" aria-live="polite" hidden></p>
+          <div class="button-row">
+            <button id="connect-button" type="submit" class="button">Conectar</button>
+            <button id="disconnect-button" type="button" class="button button--secondary" hidden>
+              Desconectar
+            </button>
+          </div>
+        </form>
+      </section>
+
+      <section id="live-section" aria-labelledby="live-title" hidden>
+        <h2 id="live-title">En vivo</h2>
+        <p class="muted" id="live-status" role="status" aria-live="polite">Cargando lecturas…</p>
+        <div id="radars" class="card-grid" aria-live="polite"></div>
+      </section>
+
+      <section id="config-section" class="panel" aria-labelledby="config-title" hidden>
+        <h2 id="config-title">Ajustes</h2>
+        <p class="form-hint">
+          Las bandas son intervalos [mínimo, máximo) en centímetros. El cambio se aplica a la
+          lectura siguiente, sin reiniciar.
+        </p>
+        <form id="config-form" novalidate>
+          <div id="config-fields"></div>
+          <p id="config-message" class="alert" role="status" aria-live="polite" hidden></p>
+          <div class="button-row">
+            <button id="save-button" type="submit" class="button">Guardar cambios</button>
+          </div>
+        </form>
+      </section>
+    </main>
+
+    <footer class="site-footer page-shell">
+      <p>Privacidad: no se usan cámaras ni se graba audio.</p>
+    </footer>
   </body>
 </html>
