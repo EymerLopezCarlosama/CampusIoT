@@ -409,6 +409,23 @@ a.button:hover {
   border-bottom: 0;
 }
 
+.data-table--nowrap th,
+.data-table--nowrap td {
+  white-space: nowrap;
+}
+
+fieldset.form-grid {
+  margin: 0 0 1rem;
+  padding: 0.75rem 1rem 1rem;
+  border: 1px solid var(--color-border);
+  border-radius: 0.625rem;
+}
+
+fieldset.form-grid legend {
+  padding: 0 0.4rem;
+  font-weight: 700;
+}
+
 .chart-container {
   position: relative;
   min-width: 0;
@@ -436,8 +453,8 @@ a.button:hover {
   }
 
   .form-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
+  align-items: start;
+}
 
   .form-field--full {
     grid-column: 1 / -1;
