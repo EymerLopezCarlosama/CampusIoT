@@ -21,6 +21,7 @@ struct SensorSnapshot {
 
 void sensorsBegin();
 void sensorsUpdate();   // Llamar en cada vuelta del loop() para mantener el radar al día
+void sensorsCalibrarFondo();   // vuelve a medir el ruido de fondo (llamar con el WiFi ya activo)
 SensorSnapshot sensorsRead();
 
 #endif // SENSORS_H
