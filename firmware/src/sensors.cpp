@@ -107,6 +107,10 @@ void sensorsBegin() {
 #endif
 }
 
+void sensorsCalibrarFondo() {
+    medirFondoMic();
+}
+
 // Llamar en cada vuelta de loop(): vacía el buffer de cada radar y anota cuándo llegó su última trama válida.
 void sensorsUpdate() {
     for (int i = 0; i < RADAR_COUNT; i++) {

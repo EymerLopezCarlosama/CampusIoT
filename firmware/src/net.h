@@ -9,4 +9,5 @@ bool netConnected();
 bool netSyncTime();                       // true cuando la hora NTP ya es válida (no bloquea)
 String netIp();                           // "" si no hay WiFi
 String netUtc();                          // "2026-11-09 15:52:10 UTC", o "" si la hora aún no está lista
-int netPostReading(const String& json);   // F7: devuelve el código HTTP o -1
+uint64_t netNowMs();                      // milisegundos desde 1970 (para device_ts); 0 si la hora aún no es válida
+int netPostReading(const String& json);   // devuelve el código HTTP (201 = guardado) o -1 si falló la conexión
