@@ -1,8 +1,20 @@
-// PROMPT — app.js
-//
-// Exportar `app` (Express) SIN llamar a listen (así se prueba con supertest).
-// Orden: cors({ origin: env.CORS_ORIGIN }) → express.json({ limit: "20kb" }) → app.use("/api", routes) → express.static(frontend, ruta: path.resolve(__dirname, "../../frontend"); en ESM __dirname se define con path.dirname(fileURLToPath(import.meta.url))) → notFound → errorHandler.
-// La página y la API salen del mismo servidor.
-//
-// Depende de: routes/index.js, middlewares/not-found.js, middlewares/error-handler.js, config/env.js
-// Hecho cuando: GET /api/salud devuelve JSON y GET / devuelve frontend/index.html.
+// App de Express sin listen() (así se prueba con supertest). Sirve la API y la página desde el mismo servidor.
+import path from "node:path";
+import { fileURLToPath } from "node:url";
+import cors from "cors";
+import express from "express";
+import { env } from "./config/env.js";
+import routes from "./routes/index.js";
+import { notFound } from "./middlewares/not-found.js";
+import { errorHandler } from "./middlewares/error-handler.js";
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+
+export const app = express();
+
+app.use(cors({ origin: env.CORS_ORIGIN }));
+app.use(express.json({ limit: "20kb" }));
+app.use("/api", routes);
+app.use(express.static(path.resolve(__dirname, "../../frontend")));
+app.use(notFound);
+app.use(errorHandler);
