@@ -1,22 +1,27 @@
-// Interfaz de sensores del nodo (F2 en adelante).
-#pragma once
+#ifndef SENSORS_H
+#define SENSORS_H
+
 #include <Arduino.h>
 #include "config.h"
 
 struct RadarReading {
     const char* id;
     bool present;
-    const char* target;   // "moving" | "static" | "both" | "none"
-    int distance_cm;
-    int energy;           // 0-100
+    const char* target; // "none", "moving", "static", "both"
+    uint16_t distance_cm;
+    uint8_t energy;
 };
 
 struct SensorSnapshot {
-    float temperature;    // NaN si el DHT22 falló
-    float humidity;       // NaN si el DHT22 falló
-    int noise_level;      // índice 0-100, nunca audio
+    float temperature;
+    float humidity;
+    int noise_level;
     RadarReading radars[RADAR_COUNT];
 };
 
 void sensorsBegin();
+void sensorsUpdate();   // Llamar en cada vuelta del loop() para mantener el radar al día
+void sensorsCalibrarFondo();   // vuelve a medir el ruido de fondo (llamar con el WiFi ya activo)
 SensorSnapshot sensorsRead();
+
+#endif // SENSORS_H

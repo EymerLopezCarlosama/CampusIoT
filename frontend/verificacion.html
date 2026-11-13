@@ -5,9 +5,125 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>CampusIoT · Verificación manual</title>
     <link rel="stylesheet" href="css/styles.css" />
+    <script type="module" src="js/verificacion.js"></script>
   </head>
   <body>
-    <!-- PROMPT: formulario de la jornada de prueba (HU-07, HU-08). Campos: espacio, día (1 o 2), franja, estado observado (las opciones cambian según el espacio), mesas ocupadas (opcional) y observador. Debajo, la tabla de las verificaciones guardadas y el resumen "X de 40 · coincidencia Y % · meta 80 %". NO mostrar el estado del sistema antes de guardar (evita sesgo). Lógica en js/verificacion.js. -->
-    <script type="module" src="js/verificacion.js"></script>
+    <header class="site-header">
+      <div class="site-header__inner">
+        <a class="site-brand" href="index.html">CampusIoT</a>
+        <nav class="site-nav" aria-label="Navegación principal">
+          <a href="index.html">Estado actual</a>
+          <a href="historial.html">Historial</a>
+          <a href="verificacion.html" aria-current="page">Verificación</a>
+        </nav>
+      </div>
+    </header>
+
+    <main class="page-shell">
+      <section class="page-heading" aria-labelledby="page-title">
+        <h1 id="page-title">Verificación manual</h1>
+        <p>Registra lo que observas en cada franja de la jornada de prueba.</p>
+      </section>
+
+      <section class="panel" aria-labelledby="form-title">
+        <h2 id="form-title">Nueva verificación</h2>
+        <p class="form-hint">
+          Registra lo que ves en el espacio <strong>antes</strong> de mirar lo que dice la página de
+          estado, para no sesgar la comparación.
+        </p>
+
+        <form id="check-form" novalidate>
+          <div class="form-grid">
+            <div class="form-field">
+              <label for="space">Espacio</label>
+              <select id="space" name="space" class="form-control" required></select>
+            </div>
+            <div class="form-field">
+              <label for="day">Día de la jornada</label>
+              <select id="day" name="day" class="form-control" required>
+                <option value="1">Día 1</option>
+                <option value="2">Día 2</option>
+              </select>
+            </div>
+            <div class="form-field">
+              <label for="slot">Franja</label>
+              <select id="slot" name="slot" class="form-control" required></select>
+            </div>
+            <div class="form-field">
+              <label for="state">Estado observado</label>
+              <select id="state" name="state" class="form-control" required></select>
+            </div>
+            <div class="form-field" id="tables-field" hidden>
+              <label for="tables">Mesas con al menos una persona (opcional)</label>
+              <input
+                id="tables"
+                name="tables"
+                class="form-control"
+                type="number"
+                inputmode="numeric"
+                min="0"
+                max="4"
+                step="1"
+              />
+              <p class="form-hint">0 = libre · 1 a 3 = parcial · 4 = lleno</p>
+            </div>
+            <div class="form-field">
+              <label for="observer">Observador</label>
+              <input
+                id="observer"
+                name="observer"
+                class="form-control"
+                type="text"
+                maxlength="60"
+                autocomplete="name"
+                required
+              />
+            </div>
+          </div>
+
+          <p id="form-message" class="alert" role="status" aria-live="polite" hidden></p>
+
+          <div class="button-row">
+            <button id="save-button" type="submit" class="button">Guardar verificación</button>
+          </div>
+        </form>
+      </section>
+
+      <section class="panel" aria-labelledby="summary-title">
+        <h2 id="summary-title">Resumen de la jornada</h2>
+        <p><strong id="summary-text">Cargando resumen…</strong></p>
+        <p id="summary-goal" class="muted"></p>
+        <div class="button-row">
+          <a class="button button--secondary" href="/api/validation/export" download>
+            Descargar CSV
+          </a>
+        </div>
+      </section>
+
+      <p id="table-message" class="alert" role="status" aria-live="polite" hidden></p>
+      <section aria-labelledby="table-title">
+        <h2 id="table-title">Verificaciones guardadas</h2>
+        <div class="table-wrapper">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th scope="col">Espacio</th>
+                <th scope="col">Día</th>
+                <th scope="col">Franja</th>
+                <th scope="col">Observado</th>
+                <th scope="col">Sistema</th>
+                <th scope="col">¿Coincide?</th>
+                <th scope="col">Observador</th>
+              </tr>
+            </thead>
+            <tbody id="checks-body"></tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer page-shell">
+      <p>Privacidad: no se usan cámaras ni se graba audio.</p>
+    </footer>
   </body>
 </html>
