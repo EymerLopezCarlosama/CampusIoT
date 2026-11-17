@@ -1,6 +1,10 @@
-// PROMPT — controllers/metrics.controller.js — Métricas (HU-09)
-//
-// obtener (200): lee from/to ya validados (por defecto, las últimas 12 h) y devuelve lo que calcula metrics.service.
-//
-// Depende de: services/metrics.service.js
-// Referencia: docs/api-contract.md ("Métricas")
+// Métricas (HU-09): sin lógica, delega en metrics.service.
+import * as metricsService from "../services/metrics.service.js";
+
+export async function obtener(req, res, next) {
+  try {
+    res.json(await metricsService.obtener(req.query.from, req.query.to));
+  } catch (err) {
+    next(err);
+  }
+}

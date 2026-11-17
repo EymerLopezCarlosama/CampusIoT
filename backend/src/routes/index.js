@@ -7,6 +7,7 @@ import readingsRoutes from "./readings.routes.js";
 import spacesRoutes from "./spaces.routes.js";
 import configRoutes from "./config.routes.js";
 import checksRoutes from "./checks.routes.js";
+import metricsRoutes from "./metrics.routes.js";
 
 const router = Router();
 
@@ -14,6 +15,7 @@ router.use("/readings", readingsRoutes);
 router.use("/spaces", spacesRoutes);  
 router.use("/spaces", configRoutes);
 router.use("/", checksRoutes);
+router.use("/metrics", metricsRoutes);
 
 // Responde aunque la BD esté caída: base_datos pasa a "error" y el servidor sigue vivo.
 router.get("/salud", async (req, res, next) => {
