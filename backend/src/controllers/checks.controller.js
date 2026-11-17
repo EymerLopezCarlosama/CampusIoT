@@ -1,7 +1,39 @@
-// PROMPT — controllers/checks.controller.js — Verificación manual (HU-07, HU-08)
-//
-// crear (201), listar (200), resumen (200), exportarCsv (200 con Content-Type text/csv y Content-Disposition attachment; filename="verificacion.csv").
-// Sin SQL ni reglas: delega en checks.service.
-//
-// Depende de: services/checks.service.js
-// Referencia: docs/api-contract.md ("Verificación manual")
+// Verificación manual (HU-07, HU-08): sin SQL ni reglas, delega en checks.service.
+import * as checksService from "../services/checks.service.js";
+
+export async function crear(req, res, next) {
+  try {
+    res.status(201).json(await checksService.registrar(req.body));
+  } catch (err) {
+    next(err);
+  }
+}
+
+export async function listar(req, res, next) {
+  try {
+    res.json(await checksService.listar());
+  } catch (err) {
+    next(err);
+  }
+}
+
+export async function resumen(req, res, next) {
+  try {
+    res.json(await checksService.resumen());
+  } catch (err) {
+    next(err);
+  }
+}
+
+export async function exportarCsv(req, res, next) {
+  try {
+    const csv = await checksService.exportarCsv();
+    res.set({
+      "Content-Type": "text/csv; charset=utf-8",
+      "Content-Disposition": 'attachment; filename="verificacion.csv"',
+    });
+    res.send(csv);
+  } catch (err) {
+    next(err);
+  }
+}
