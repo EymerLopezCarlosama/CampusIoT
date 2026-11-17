@@ -4,11 +4,12 @@ import { env } from "../config/env.js";
 import { probarConexion } from "../config/database.js";
 import * as readingsRepo from "../repositories/readings.repository.js";
 import readingsRoutes from "./readings.routes.js";
+import spacesRoutes from "./spaces.routes.js";
 
 const router = Router();
 
 router.use("/readings", readingsRoutes);
-
+router.use("/spaces", spacesRoutes);  
 // Responde aunque la BD esté caída: base_datos pasa a "error" y el servidor sigue vivo.
 router.get("/salud", async (req, res, next) => {
   try {
