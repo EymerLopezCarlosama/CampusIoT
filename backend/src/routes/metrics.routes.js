@@ -1,6 +1,11 @@
-// PROMPT — routes/metrics.routes.js — Métricas (HU-09)
-//
-// Router con GET /metrics?from=&to= (validate query → controller).
-//
-// Depende de: controllers/metrics.controller.js, validators/spaces.validator.js (esquema de rango de fechas)
-// Referencia: docs/api-contract.md ("Métricas")
+// Rutas de métricas (HU-09): GET /metrics?from=&to=. Solo define rutas.
+import { Router } from "express";
+import { validate } from "../middlewares/validate.js";
+import { rangoFechasQuerySchema } from "../validators/spaces.validator.js";
+import * as controller from "../controllers/metrics.controller.js";
+
+const router = Router();
+
+router.get("/", validate({ query: rangoFechasQuerySchema }), controller.obtener);
+
+export default router;
