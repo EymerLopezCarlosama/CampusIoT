@@ -1,6 +1,18 @@
-// PROMPT — routes/index.js
-//
-// Router raíz (montado en /api). Montar: readings, spaces, config (calibración), checks (incluye /manual-checks y /validation/*), metrics.
-// Definir aquí GET /salud → { backend: "ok", base_datos: "ok"|"error", nodos: [{ node, last_seen, online }] } (usa probarConexion y readings.repository). Debe responder aunque la BD esté caída (base_datos: "error").
-// Referencia: docs/api-contract.md ("Utilidades")
-// Hecho cuando: /api/salud muestra el estado real de la BD y de cada nodo.
+// Router raíz (montado en /api). Por ahora solo GET /salud; los demás routers se montan en sus pasos.
+import { Router } from "express";
+import { probarConexion } from "../config/database.js";
+
+const router = Router();
+
+// Responde aunque la BD esté caída: base_datos pasa a "error" y el servidor sigue vivo.
+router.get("/salud", async (req, res, next) => {
+  try {
+    const baseDatos = await probarConexion();
+    // nodos queda vacío hasta B6, cuando exista readings.repository.listarNodos().
+    res.json({ backend: "ok", base_datos: baseDatos ? "ok" : "error", nodos: [] });
+  } catch (err) {
+    next(err);
+  }
+});
+
+export default router;
