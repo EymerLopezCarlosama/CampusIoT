@@ -23,7 +23,7 @@ export async function obtenerPorId(id) {
 // En el Sótano las zonas no tienen bandas (tables queda vacío).
 export async function zonasConBandas(spaceId) {
   const { rows } = await query(
-    `SELECT z.id_nodo AS node_id, z.codigo AS code,
+    `SELECT z.id_zona AS zone_id, z.id_nodo AS node_id, z.codigo AS code,
             b.num_mesa AS table_no, b.min_cm, b.max_cm
        FROM zona z
        LEFT JOIN banda_mesa b ON b.id_zona = z.id_zona
@@ -34,7 +34,9 @@ export async function zonasConBandas(spaceId) {
   const zonas = new Map();
   for (const f of rows) {
     const clave = `${f.node_id}:${f.code}`;
-    if (!zonas.has(clave)) zonas.set(clave, { node_id: f.node_id, code: f.code, tables: [] });
+    if (!zonas.has(clave)) {
+      zonas.set(clave, { zone_id: f.zone_id, node_id: f.node_id, code: f.code, tables: [] });
+    }
     if (f.table_no !== null) {
       zonas.get(clave).tables.push({ table_no: f.table_no, min_cm: f.min_cm, max_cm: f.max_cm });
     }
