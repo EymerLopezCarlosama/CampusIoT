@@ -1,7 +1,12 @@
-// PROMPT — routes/readings.routes.js — Rutas de lecturas (HU-01)
-//
-// Router de /readings con: POST / → autenticarNodo → validate({ body: lecturaSchema }) → controller.crear.
-// Solo define rutas: sin lógica ni SQL.
-//
-// Depende de: validators/readings.validator.js, controllers/readings.controller.js, middlewares/auth.js, middlewares/validate.js
-// Referencia: docs/api-contract.md ("Lecturas")
+// Rutas de lecturas (HU-01): POST /readings. Solo define rutas.
+import { Router } from "express";
+import { autenticarNodo } from "../middlewares/auth.js";
+import { validate } from "../middlewares/validate.js";
+import { lecturaSchema } from "../validators/readings.validator.js";
+import * as controller from "../controllers/readings.controller.js";
+
+const router = Router();
+
+router.post("/", autenticarNodo, validate({ body: lecturaSchema }), controller.crear);
+
+export default router;
