@@ -1,7 +1,14 @@
-// PROMPT — routes/checks.routes.js — Verificación manual y resumen (HU-07, HU-08)
-//
-// Router con: POST /manual-checks · GET /manual-checks · GET /validation/summary · GET /validation/export (CSV, Content-Type text/csv).
-// Cada ruta: validate(...) → controller. Solo define rutas.
-//
-// Depende de: validators/checks.validator.js, controllers/checks.controller.js
-// Referencia: docs/api-contract.md ("Verificación manual")
+// Rutas de verificación manual y resumen (HU-07, HU-08). Solo define rutas.
+import { Router } from "express";
+import { validate } from "../middlewares/validate.js";
+import { crearVerificacionSchema } from "../validators/checks.validator.js";
+import * as controller from "../controllers/checks.controller.js";
+
+const router = Router();
+
+router.post("/manual-checks", validate({ body: crearVerificacionSchema }), controller.crear);
+router.get("/manual-checks", controller.listar);
+router.get("/validation/summary", controller.resumen);
+router.get("/validation/export", controller.exportarCsv);
+
+export default router;

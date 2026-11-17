@@ -1,9 +1,77 @@
-// PROMPT — services/checks.service.js — Verificación manual (HU-07, HU-08)
-//
-// registrar(datos): obtener el estado ACTUAL del espacio (spaces.estadoActual(slug), que ya aplica "sin_conexion"), guardar manual_state, system_state y match = (manual_state === system_state). Franja repetida (mismo espacio + día + franja): el service captura el error 23505 de pg que deja subir el repositorio y lanza AppError(409, "FRANJA_DUPLICADA"). Espacio inexistente → 404.
-// listar(): todas las verificaciones.
-// resumen(): { total: 40, registered, matches, coincidence_pct, goal_pct: 80, goal_met } con coincidence_pct = matches / 40 × 100 redondeado a 1 decimal (siempre sobre 40, no sobre lo registrado).
-// exportarCsv(): texto CSV con columnas space, day, slot, manual_state, system_state, match, observer, created_at (escapar comas y comillas).
-//
-// Depende de: repositories/checks.repository.js, services/spaces.service.js
-// Referencia: docs/api-contract.md ("Verificación manual") · docs/pruebas/protocolo-jornada-prueba.md
+// Verificación manual (HU-07, HU-08): compara lo que ve el equipo con el estado del sistema.
+import { AppError } from "../middlewares/error-handler.js";
+import * as checksRepo from "../repositories/checks.repository.js";
+import * as spacesRepo from "../repositories/spaces.repository.js";
+import { estadoActual } from "./spaces.service.js";
+
+const TOTAL = 40; // 2 espacios x 10 franjas x 2 días (OE4)
+const META_PCT = 80;
+
+export async function registrar(datos) {
+  const espacio = await spacesRepo.obtenerPorSlug(datos.space);
+  if (!espacio) throw new AppError(404, "NO_ENCONTRADO", "El espacio no existe.");
+
+  // Estado del sistema en este instante; ya aplica sin_conexion (cuenta como no coincidente).
+  const { state: systemState } = await estadoActual(datos.space);
+  const match = datos.manual_state === systemState;
+
+  try {
+    const id = await checksRepo.insertar({
+      spaceId: espacio.id,
+      day: datos.day,
+      slot: datos.slot,
+      manualState: datos.manual_state,
+      manualTables: datos.manual_tables_occupied,
+      systemState,
+      match,
+      observer: datos.observer,
+    });
+    return { id, system_state: systemState, match };
+  } catch (err) {
+    if (err.code === "23505") {
+      throw new AppError(
+        409,
+        "FRANJA_DUPLICADA",
+        `Ya existe una verificación de ${espacio.name} para el día ${datos.day} en la franja ${datos.slot}.`
+      );
+    }
+    throw err;
+  }
+}
+
+export async function listar() {
+  return checksRepo.listar();
+}
+
+// coincidence_pct se calcula siempre sobre las 40 previstas, no sobre las registradas.
+export async function resumen() {
+  const { registered, matches } = await checksRepo.contarCoincidencias();
+  const pct = Math.round((matches / TOTAL) * 1000) / 10;
+  return {
+    total: TOTAL,
+    registered,
+    matches,
+    coincidence_pct: pct,
+    goal_pct: META_PCT,
+    goal_met: pct >= META_PCT,
+  };
+}
+
+// Escapa comas, comillas y saltos de línea. Si el texto empieza con =, +, - o @ se le antepone
+// una comilla para que Excel no lo ejecute como fórmula (el observador lo escribe una persona).
+function celda(valor) {
+  if (valor == null) return "";
+  let texto = valor instanceof Date ? valor.toISOString() : String(valor);
+  if (/^[=+\-@]/.test(texto)) texto = `'${texto}`;
+  return /[",\r\n]/.test(texto) ? `"${texto.replace(/"/g, '""')}"` : texto;
+}
+
+const COLUMNAS = ["space", "day", "slot", "manual_state", "system_state", "match", "observer", "created_at"];
+
+export async function exportarCsv() {
+  const filas = await checksRepo.listar();
+  const lineas = [COLUMNAS.join(",")];
+  for (const f of filas) lineas.push(COLUMNAS.map((c) => celda(f[c])).join(","));
+  // BOM al inicio para que Excel muestre bien las tildes (UTF-8).
+  return "\uFEFF" + lineas.join("\r\n") + "\r\n";
+}
