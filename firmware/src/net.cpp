@@ -15,12 +15,31 @@ static const time_t HORA_VALIDA_DESDE = 1700000000;      // si time() supera est
 static unsigned long ultimoIntento = 0;
 static bool ntpIniciado = false;
 
+struct Red { const char* ssid; const char* clave; };
+static const Red REDES[] = {
+    { WIFI_SSID, WIFI_PASSWORD },
+#ifdef WIFI2_SSID
+    { WIFI2_SSID, WIFI2_PASSWORD },
+#endif
+#ifdef WIFI3_SSID
+    { WIFI3_SSID, WIFI3_PASSWORD },
+#endif
+};
+static const int NUM_REDES = sizeof(REDES) / sizeof(REDES[0]);
+static int redActual = 0;
+
+static void conectarRedActual() {
+    WiFi.disconnect();
+    WiFi.begin(REDES[redActual].ssid, REDES[redActual].clave);
+    Serial.printf("[net] probando WiFi \"%s\"\n", REDES[redActual].ssid);
+    ultimoIntento = millis();
+}
+
 void netBegin() {
     WiFi.persistent(false);
     WiFi.mode(WIFI_STA);
     WiFi.setAutoReconnect(true);
-    WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
-    ultimoIntento = millis();
+    conectarRedActual();
 
     unsigned long inicio = millis();
     while (WiFi.status() != WL_CONNECTED && millis() - inicio < NET_CONEXION_MAX_MS) {
@@ -30,11 +49,9 @@ void netBegin() {
 
 void netLoop() {
     if (WiFi.status() == WL_CONNECTED) return;
-    unsigned long ahora = millis();
-    if (ahora - ultimoIntento < NET_REINTENTO_MS) return;
-    ultimoIntento = ahora;
-    WiFi.disconnect();
-    WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
+    if (millis() - ultimoIntento < NET_REINTENTO_MS) return;
+    redActual = (redActual + 1) % NUM_REDES;  // con una sola red repite la misma
+    conectarRedActual();
 }
 
 bool netConnected() {
