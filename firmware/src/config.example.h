@@ -28,6 +28,11 @@
 // --- Red ---
 #define WIFI_SSID      "CAMBIAR"
 #define WIFI_PASSWORD  "CAMBIAR"
+// Redes extra (opcional, hasta 3 en total): si no conecta a la primera, la placa prueba la siguiente cada 15 s.
+// #define WIFI2_SSID      "CAMBIAR"
+// #define WIFI2_PASSWORD  "CAMBIAR"
+// #define WIFI3_SSID      "CAMBIAR"
+// #define WIFI3_PASSWORD  "CAMBIAR"
 #define SERVER_URL     "http://192.168.1.50:3000/api/readings"   // en línea: https://<tu-servicio>.onrender.com/api/readings
 
 // --- Tiempos ---
