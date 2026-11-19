@@ -124,7 +124,7 @@ S2-S4 ya pasaron: solo se hizo el diseño y el armado (4.1). Lunes 2 nov y lunes
 
 ## 9. Pendientes abiertos
 - [ ] Crear la encuesta (HU-10) y pasar su URL a María para `ENCUESTA_URL` y el QR.
-- [ ] Confirmar el tipo de red WiFi donde irán los nodos (WPA2 personal, institucional o portal cautivo); plan B: punto de acceso del celular.
+- [x] Red de los nodos: red propia del equipo (hotspot o router con datos móviles, 2,4 GHz, WPA2 personal). Falta probar la señal en cada espacio (ver `docs/instalacion/condiciones-red-y-energia.md`).
 - [ ] Definir las 10 etiquetas de franja de la jornada (ver `docs/pruebas/protocolo-jornada-prueba.md`).
 - [ ] Fijar el criterio de estado del Sótano para la verificación manual antes de la jornada.
 - [ ] Cambiar las claves `dev-key-*` del seed al desplegar en Supabase y ponerlas en `firmware/src/config.h`.
