@@ -5,10 +5,11 @@
   "type": "module",
   "engines": { "node": ">=20" },
   "scripts": {
-    "dev": "node --watch src/server.js",
-    "start": "node src/server.js",
-    "test": "vitest run --passWithNoTests"
-  },
+  "dev": "node --watch src/server.js",
+  "start": "node src/server.js",
+  "test": "vitest run --passWithNoTests",
+  "test:integration": "vitest run --config vitest.integration.config.js"
+},
   "dependencies": {
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
