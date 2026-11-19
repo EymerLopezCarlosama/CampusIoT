@@ -30,6 +30,13 @@ Sirve para tener la misma base de datos en los tres computadores sin instalar Po
 - Para reiniciar la BD desde cero: `docker compose down -v` y volver a subir.
 El firmware **no** usa Docker; se compila y se sube con PlatformIO.
 
+## Despliegue en línea
+- Base de datos: Supabase (PostgreSQL). Backend y página: Render (Docker, `backend/Dockerfile`).
+- URL: https://campusiot.onrender.com (`/api/salud` para verificar).
+- Variables en Render: `DATABASE_URL` (pooler de Supabase, puerto 6543), `DATABASE_SSL=true`, `ADMIN_KEY`, `CORS_ORIGIN`, `OFFLINE_AFTER_S=30`, `EXPECTED_INTERVAL_S=3`.
+- Las claves de los nodos se cambian en la tabla `nodo` y se configuran en `firmware/src/config.h`. Nunca se suben al repo.
+- El plan gratuito de Render se duerme sin tráfico: abrir la página un minuto antes de la jornada.
+
 ## Flujo de ramas
 Sin `develop`: `main` es la rama estable (lo que se usa en la jornada de prueba) y cada integrante trabaja en su propia rama:
 | Rama | Quién | Carpeta |
